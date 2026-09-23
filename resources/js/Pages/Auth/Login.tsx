@@ -1,4 +1,4 @@
-import { FormEventHandler, useEffect, useRef, useState } from "react";
+import { FormEventHandler, useEffect, useState } from "react";
 import { Head, useForm } from "@inertiajs/react";
 import {
     User,
@@ -9,8 +9,6 @@ import {
     Sun,
     Moon,
     Monitor,
-    ChevronDown,
-    Check,
 } from "lucide-react";
 
 interface LoginProps {
@@ -23,8 +21,7 @@ type ThemeMode = "light" | "dark" | "system";
 export default function Login({ status }: LoginProps) {
     const [showPassword, setShowPassword] = useState(false);
     const [selectedRole, setSelectedRole] = useState<string>("employee");
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const menuRef = useRef<HTMLDivElement>(null);
+    const [isHovered, setIsHovered] = useState(false);
 
     // Theme state (light, dark, system/otomatis)
     const [theme, setTheme] = useState<ThemeMode>(() => {
@@ -75,17 +72,6 @@ export default function Login({ status }: LoginProps) {
         return () => mediaQuery.removeEventListener("change", handleSystemChange);
     }, [theme]);
 
-    // Click outside listener for mobile touch responsiveness
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-                setIsMenuOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
     const { data, setData, post, processing, errors, reset } = useForm({
         login: "employee",
         password: "password",
@@ -123,9 +109,6 @@ export default function Login({ status }: LoginProps) {
         { id: "dark" as ThemeMode, label: "Gelap", icon: Moon },
         { id: "system" as ThemeMode, label: "Otomatis", icon: Monitor },
     ];
-
-    const currentThemeOption = themeOptions.find((t) => t.id === theme) || themeOptions[2];
-    const ActiveThemeIcon = currentThemeOption.icon;
 
     return (
         <div className="relative min-h-screen flex items-center justify-center p-4 bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-white transition-colors duration-300 overflow-hidden select-none">
@@ -167,64 +150,74 @@ export default function Login({ status }: LoginProps) {
                 />
             </div>
 
-            {/* Top Bar: Responsive Hover / Tap Theme Toggle on Top-Right */}
-            <div className="absolute top-4 right-4 sm:top-7 sm:right-8 z-30" ref={menuRef}>
-                <div
-                    className="relative"
-                    onMouseEnter={() => setIsMenuOpen(true)}
-                    onMouseLeave={() => setIsMenuOpen(false)}
-                >
-                    {/* Idle State: Only shows the single active mode */}
-                    <button
-                        type="button"
-                        onClick={() => setIsMenuOpen((prev) => !prev)}
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white/85 dark:bg-slate-900/85 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl shadow-md hover:border-sky-500/50 dark:hover:border-sky-400/50 transition-all cursor-pointer group"
-                        aria-label="Ganti Tema Tampilan"
-                        title={`Tema aktif: ${currentThemeOption.label}. Klik atau sorot untuk mengganti.`}
-                    >
-                        <ActiveThemeIcon className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400 transition-transform duration-200 group-hover:scale-110" />
-                        <span className="text-[11px] font-medium text-slate-700 dark:text-slate-300">
-                            {currentThemeOption.label}
-                        </span>
-                        <ChevronDown
-                            className={`w-3 h-3 text-slate-400 transition-transform duration-200 ${
-                                isMenuOpen ? "rotate-180 text-sky-500" : ""
-                            }`}
-                        />
-                    </button>
+            {/* Top Bar: Responsive Theme Switcher on Top-Right */}
+            <div className="absolute top-4 right-4 sm:top-7 sm:right-8 z-30">
+                {/* Mobile View: Original simple 3 icons toggle */}
+                <div className="flex sm:hidden items-center gap-0.5 p-1 rounded-xl bg-white/85 dark:bg-slate-900/85 border border-slate-200 dark:border-white/10 backdrop-blur-xl shadow-md">
+                    {themeOptions.map((opt) => {
+                        const Icon = opt.icon;
+                        const isSelected = theme === opt.id;
+                        return (
+                            <button
+                                key={opt.id}
+                                type="button"
+                                onClick={() => setTheme(opt.id)}
+                                className={`p-1.5 rounded-lg transition-all ${
+                                    isSelected
+                                        ? opt.id === "light"
+                                            ? "bg-amber-400/20 text-amber-600 dark:text-amber-400 font-semibold"
+                                            : opt.id === "dark"
+                                            ? "bg-sky-500/20 text-sky-600 dark:text-sky-400 font-semibold"
+                                            : "bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-semibold"
+                                        : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                                }`}
+                                title={opt.label}
+                                aria-label={opt.label}
+                            >
+                                <Icon className="w-3.5 h-3.5" />
+                            </button>
+                        );
+                    })}
+                </div>
 
-                    {/* Hover / Tap Menu: Expands smoothly showing all 3 theme options */}
-                    {isMenuOpen && (
-                        <div className="absolute right-0 top-full mt-1.5 w-36 py-1 px-1 rounded-xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-white/10 shadow-2xl backdrop-blur-2xl animate-fade-slide-up flex flex-col gap-0.5 z-40">
-                            {themeOptions.map((opt) => {
-                                const Icon = opt.icon;
-                                const isSelected = theme === opt.id;
-                                return (
-                                    <button
-                                        key={opt.id}
-                                        type="button"
-                                        onClick={() => {
-                                            setTheme(opt.id);
-                                            setIsMenuOpen(false);
-                                        }}
-                                        className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer text-left ${
-                                            isSelected
-                                                ? "bg-sky-500/15 text-sky-600 dark:text-sky-400 font-semibold"
-                                                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60"
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-2">
-                                            <Icon className="w-3.5 h-3.5" />
-                                            <span>{opt.label}</span>
-                                        </div>
-                                        {isSelected && (
-                                            <Check className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
-                                        )}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    )}
+                {/* Desktop View: Expanding Horizontal Pill on Hover */}
+                <div
+                    className="hidden sm:flex items-center p-1 rounded-xl bg-white/85 dark:bg-slate-900/85 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl shadow-lg transition-all duration-300 ease-out overflow-hidden"
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                >
+                    {themeOptions.map((opt) => {
+                        const Icon = opt.icon;
+                        const isSelected = theme === opt.id;
+                        // On desktop: If hovered, all are visible. If idle/not hovered, ONLY the active theme is visible!
+                        const isVisible = isHovered || isSelected;
+
+                        return (
+                            <button
+                                key={opt.id}
+                                type="button"
+                                onClick={() => setTheme(opt.id)}
+                                className={`flex items-center gap-1.5 rounded-lg text-xs font-medium transition-all duration-300 ease-out whitespace-nowrap cursor-pointer ${
+                                    isVisible
+                                        ? "max-w-[110px] opacity-100 px-2.5 py-1 pointer-events-auto"
+                                        : "max-w-0 opacity-0 px-0 py-1 pointer-events-none overflow-hidden scale-90"
+                                } ${
+                                    isSelected
+                                        ? opt.id === "light"
+                                            ? "bg-amber-400/20 text-amber-600 dark:text-amber-400 font-semibold shadow-sm"
+                                            : opt.id === "dark"
+                                            ? "bg-sky-500/20 text-sky-600 dark:text-sky-400 font-semibold shadow-sm"
+                                            : "bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-semibold shadow-sm"
+                                        : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800/60"
+                                }`}
+                                title={opt.label}
+                                aria-label={opt.label}
+                            >
+                                <Icon className="w-3.5 h-3.5 shrink-0" />
+                                <span className="text-[11px]">{opt.label}</span>
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
 
@@ -320,7 +313,7 @@ export default function Login({ status }: LoginProps) {
                             </button>
                         </div>
                         {errors.password && (
-                            <p className="mt-1 text-xs text-rose-500 dark:text-rose-400 font-medium">
+                            <p className="mt-1 text-xs text-rose-400 font-medium">
                                 {errors.password}
                             </p>
                         )}
