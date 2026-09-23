@@ -1,6 +1,17 @@
-import { FormEventHandler, useEffect, useState } from "react";
+import { FormEventHandler, useEffect, useRef, useState } from "react";
 import { Head, useForm } from "@inertiajs/react";
-import { User, Lock, Eye, EyeOff, ArrowRight, Sun, Moon, Monitor } from "lucide-react";
+import {
+    User,
+    Lock,
+    Eye,
+    EyeOff,
+    ArrowRight,
+    Sun,
+    Moon,
+    Monitor,
+    ChevronDown,
+    Check,
+} from "lucide-react";
 
 interface LoginProps {
     status?: string;
@@ -12,6 +23,8 @@ type ThemeMode = "light" | "dark" | "system";
 export default function Login({ status }: LoginProps) {
     const [showPassword, setShowPassword] = useState(false);
     const [selectedRole, setSelectedRole] = useState<string>("employee");
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
 
     // Theme state (light, dark, system/otomatis)
     const [theme, setTheme] = useState<ThemeMode>(() => {
@@ -62,6 +75,17 @@ export default function Login({ status }: LoginProps) {
         return () => mediaQuery.removeEventListener("change", handleSystemChange);
     }, [theme]);
 
+    // Click outside listener for mobile touch responsiveness
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setIsMenuOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
     const { data, setData, post, processing, errors, reset } = useForm({
         login: "employee",
         password: "password",
@@ -94,6 +118,15 @@ export default function Login({ status }: LoginProps) {
         }));
     };
 
+    const themeOptions = [
+        { id: "light" as ThemeMode, label: "Terang", icon: Sun },
+        { id: "dark" as ThemeMode, label: "Gelap", icon: Moon },
+        { id: "system" as ThemeMode, label: "Otomatis", icon: Monitor },
+    ];
+
+    const currentThemeOption = themeOptions.find((t) => t.id === theme) || themeOptions[2];
+    const ActiveThemeIcon = currentThemeOption.icon;
+
     return (
         <div className="relative min-h-screen flex items-center justify-center p-4 bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-white transition-colors duration-300 overflow-hidden select-none">
             <Head title="Masuk ? AFRS AirNav Indonesia" />
@@ -122,7 +155,7 @@ export default function Login({ status }: LoginProps) {
             </div>
 
             {/* Top Bar: Logo on Top-Left */}
-            <div className="absolute top-5 left-5 sm:top-7 sm:left-8 z-20">
+            <div className="absolute top-4 left-4 sm:top-7 sm:left-8 z-20">
                 <img
                     src={
                         isDarkActual
@@ -134,58 +167,69 @@ export default function Login({ status }: LoginProps) {
                 />
             </div>
 
-            {/* Top Bar: Theme Switcher on Top-Right (Terang, Gelap, Otomatis) */}
-            <div className="absolute top-5 right-5 sm:top-7 sm:right-8 z-20">
-                <div className="flex items-center gap-0.5 p-1 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 backdrop-blur-xl shadow-lg transition-colors">
+            {/* Top Bar: Responsive Hover / Tap Theme Toggle on Top-Right */}
+            <div className="absolute top-4 right-4 sm:top-7 sm:right-8 z-30" ref={menuRef}>
+                <div
+                    className="relative"
+                    onMouseEnter={() => setIsMenuOpen(true)}
+                    onMouseLeave={() => setIsMenuOpen(false)}
+                >
+                    {/* Idle State: Only shows the single active mode */}
                     <button
                         type="button"
-                        onClick={() => setTheme("light")}
-                        className={`p-1.5 sm:px-2.5 sm:py-1 rounded-lg transition-all text-xs flex items-center gap-1.5 cursor-pointer ${
-                            theme === "light"
-                                ? "bg-amber-400/20 text-amber-600 dark:text-amber-400 font-semibold shadow-sm"
-                                : "text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
-                        }`}
-                        title="Mode Terang"
-                        aria-label="Mode Terang"
+                        onClick={() => setIsMenuOpen((prev) => !prev)}
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white/85 dark:bg-slate-900/85 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl shadow-md hover:border-sky-500/50 dark:hover:border-sky-400/50 transition-all cursor-pointer group"
+                        aria-label="Ganti Tema Tampilan"
+                        title={`Tema aktif: ${currentThemeOption.label}. Klik atau sorot untuk mengganti.`}
                     >
-                        <Sun className="w-3.5 h-3.5" />
-                        <span className="hidden sm:inline text-[11px]">Terang</span>
+                        <ActiveThemeIcon className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400 transition-transform duration-200 group-hover:scale-110" />
+                        <span className="text-[11px] font-medium text-slate-700 dark:text-slate-300">
+                            {currentThemeOption.label}
+                        </span>
+                        <ChevronDown
+                            className={`w-3 h-3 text-slate-400 transition-transform duration-200 ${
+                                isMenuOpen ? "rotate-180 text-sky-500" : ""
+                            }`}
+                        />
                     </button>
 
-                    <button
-                        type="button"
-                        onClick={() => setTheme("dark")}
-                        className={`p-1.5 sm:px-2.5 sm:py-1 rounded-lg transition-all text-xs flex items-center gap-1.5 cursor-pointer ${
-                            theme === "dark"
-                                ? "bg-sky-500/20 text-sky-600 dark:text-sky-400 font-semibold shadow-sm"
-                                : "text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
-                        }`}
-                        title="Mode Gelap"
-                        aria-label="Mode Gelap"
-                    >
-                        <Moon className="w-3.5 h-3.5" />
-                        <span className="hidden sm:inline text-[11px]">Gelap</span>
-                    </button>
-
-                    <button
-                        type="button"
-                        onClick={() => setTheme("system")}
-                        className={`p-1.5 sm:px-2.5 sm:py-1 rounded-lg transition-all text-xs flex items-center gap-1.5 cursor-pointer ${
-                            theme === "system"
-                                ? "bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-semibold shadow-sm"
-                                : "text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
-                        }`}
-                        title="Otomatis (Ikuti Sistem)"
-                        aria-label="Otomatis (Ikuti Sistem)"
-                    >
-                        <Monitor className="w-3.5 h-3.5" />
-                        <span className="hidden sm:inline text-[11px]">Otomatis</span>
-                    </button>
+                    {/* Hover / Tap Menu: Expands smoothly showing all 3 theme options */}
+                    {isMenuOpen && (
+                        <div className="absolute right-0 top-full mt-1.5 w-36 py-1 px-1 rounded-xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-white/10 shadow-2xl backdrop-blur-2xl animate-fade-slide-up flex flex-col gap-0.5 z-40">
+                            {themeOptions.map((opt) => {
+                                const Icon = opt.icon;
+                                const isSelected = theme === opt.id;
+                                return (
+                                    <button
+                                        key={opt.id}
+                                        type="button"
+                                        onClick={() => {
+                                            setTheme(opt.id);
+                                            setIsMenuOpen(false);
+                                        }}
+                                        className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer text-left ${
+                                            isSelected
+                                                ? "bg-sky-500/15 text-sky-600 dark:text-sky-400 font-semibold"
+                                                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60"
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <Icon className="w-3.5 h-3.5" />
+                                            <span>{opt.label}</span>
+                                        </div>
+                                        {isSelected && (
+                                            <Check className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
+                                        )}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
             </div>
 
             {/* Central Modern Auth Card with Smooth Entrance Animation */}
-            <div className="relative z-10 w-full max-w-[380px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl border border-slate-200/90 dark:border-white/10 rounded-2xl p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.1),0_0_30px_rgba(14,165,233,0.08)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_40px_rgba(14,165,233,0.15)] animate-fade-slide-up transition-colors duration-300">
+            <div className="relative z-10 w-full max-w-[380px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl border border-slate-200/90 dark:border-white/10 rounded-2xl p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.08),0_0_30px_rgba(14,165,233,0.06)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_40px_rgba(14,165,233,0.15)] animate-fade-slide-up transition-colors duration-300">
                 {/* Top Glowing Ambient Border Line */}
                 <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-sky-500 to-transparent" />
 
