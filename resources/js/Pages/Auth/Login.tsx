@@ -1,6 +1,6 @@
 import { FormEventHandler, useEffect, useState } from "react";
 import { Head, useForm } from "@inertiajs/react";
-import { User, Lock, Eye, EyeOff, Radio, ArrowRight } from "lucide-react";
+import { User, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 
 interface LoginProps {
     status?: string;
@@ -70,17 +70,13 @@ export default function Login({ status }: LoginProps) {
                 </div>
             </div>
 
-            {/* Top Bar Status Badge */}
-            <div className="absolute top-5 left-5 right-5 flex items-center justify-between text-xs z-10 text-slate-400">
-                <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 -ml-4" />
-                    <span className="font-mono text-[11px] tracking-wider text-slate-300">AIRNAV CABANG MEDAN</span>
-                </div>
-                <div className="hidden sm:flex items-center gap-1.5 font-mono text-[10px] text-slate-400">
-                    <Radio className="w-3.5 h-3.5 text-sky-400" />
-                    <span>WIMM / KNO ? ONLINE</span>
-                </div>
+            {/* Logo in Top-Left Corner of Screen */}
+            <div className="absolute top-5 left-5 sm:top-7 sm:left-8 z-20">
+                <img
+                    src="/assets/images/LOGOAIRNAVINDONESIALandscapePutih-1.png"
+                    alt="AirNav Indonesia"
+                    className="h-8 sm:h-9 w-auto object-contain drop-shadow-[0_2px_12px_rgba(56,189,248,0.25)] transition-transform duration-300 hover:scale-105"
+                />
             </div>
 
             {/* Central Modern Auth Card */}
@@ -88,21 +84,12 @@ export default function Login({ status }: LoginProps) {
                 {/* Top Glowing Ambient Border Line */}
                 <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-sky-400 to-transparent" />
 
-                {/* Header: Proportionate Clean Logo & Title */}
-                <div className="text-center mb-5">
-                    <img
-                        src="/assets/images/LOGOAIRNAVINDONESIALandscapePutih-1.png"
-                        alt="AirNav Indonesia"
-                        className="h-7 w-auto max-w-[155px] mx-auto mb-3 object-contain drop-shadow-[0_2px_10px_rgba(56,189,248,0.3)] transition-transform duration-300 hover:scale-105"
-                    />
-                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-[0.2em] uppercase bg-sky-500/10 text-sky-400 border border-sky-500/20 mb-1.5">
-                        <span className="w-1 h-1 rounded-full bg-sky-400 animate-pulse" />
-                        FACILITY REPORTING SYSTEM
-                    </div>
-                    <h1 className="text-lg font-bold tracking-tight text-white">
+                {/* Header: Clean Direct Title */}
+                <div className="text-center mb-6">
+                    <h1 className="text-2xl font-extrabold tracking-tight text-white">
                         AFRS
                     </h1>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-xs text-slate-400 mt-1">
                         AirNav Facility Reporting System
                     </p>
                 </div>
