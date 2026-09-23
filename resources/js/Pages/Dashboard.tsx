@@ -263,41 +263,30 @@ export default function Dashboard({ stats, recentReports, chartData = [] }: Dash
 
     return (
         <AuthenticatedLayout>
-            <Head title="Dashboard ? AFRS AirNav Medan" />
+            <Head title="Dashboard - AFRS AirNav Medan" />
 
             <div className="space-y-6">
                 {/* Hero Welcome Banner */}
-                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-sky-700 via-blue-800 to-indigo-900 dark:from-slate-900 dark:via-sky-950 dark:to-blue-950 p-6 sm:p-8 text-white border border-sky-600/30 dark:border-slate-800 shadow-xl shadow-sky-900/10">
-                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                        <div className="space-y-2.5 max-w-2xl">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 dark:bg-sky-500/10 backdrop-blur-md text-xs font-medium border border-white/15 dark:border-sky-500/20 text-sky-100 dark:text-sky-300">
-                                <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-                                </span>
-                                <span className="font-semibold tracking-wide">AirNav Cabang Medan</span>
-                                <span className="text-white/40 dark:text-sky-400/40">?</span>
-                                <span>AFRS Portal Fasilitas</span>
-                            </div>
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-sky-700 via-blue-800 to-indigo-900 dark:from-slate-900 dark:via-sky-950 dark:to-blue-950 p-5 sm:p-6 text-white border border-sky-600/30 dark:border-slate-800 shadow-lg shadow-sky-900/10">
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div className="space-y-1 max-w-xl">
+                            <span className="inline-block px-2.5 py-0.5 rounded-md bg-white/10 dark:bg-sky-500/10 text-[11px] font-semibold text-sky-200 border border-white/15 dark:border-sky-500/20">
+                                AirNav Cabang Medan
+                            </span>
 
-                            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white drop-shadow-xs">
-                                Selamat Datang, {user.name} ??
+                            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+                                Selamat Datang, {user.name}
                             </h1>
 
-                            <p className="text-sky-100/90 dark:text-slate-300 text-sm leading-relaxed max-w-xl">
-                                {user.department?.name ? (
-                                    <span className="font-semibold text-white">
-                                        Unit {user.department.name} ?{" "}
-                                    </span>
-                                ) : null}
-                                Pantau dan kelola seluruh pelaporan kerusakan fasilitas kerja perkantoran secara cepat, transparan, dan terintegrasi.
+                            <p className="text-sky-100/80 dark:text-slate-300 text-xs sm:text-sm">
+                                {user.department?.name || "AirNav Facility Reporting System (AFRS)"}
                             </p>
                         </div>
 
                         {user.role === "employee" && (
                             <Link
                                 href={route("reports.create")}
-                                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white text-sky-900 hover:bg-sky-50 font-bold text-sm shadow-lg shadow-black/10 transition-all shrink-0 hover:scale-[1.02] active:scale-[0.98]"
+                                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white text-sky-900 hover:bg-sky-50 font-bold text-xs sm:text-sm shadow-md transition-all shrink-0 hover:scale-[1.02] active:scale-[0.98]"
                             >
                                 <FilePlus className="w-4 h-4 text-sky-600" />
                                 <span>Laporkan Kerusakan</span>
@@ -307,7 +296,7 @@ export default function Dashboard({ stats, recentReports, chartData = [] }: Dash
                         {user.role === "technician" && (
                             <Link
                                 href={route("reports.index")}
-                                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white text-sky-900 hover:bg-sky-50 font-bold text-sm shadow-lg shadow-black/10 transition-all shrink-0 hover:scale-[1.02] active:scale-[0.98]"
+                                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white text-sky-900 hover:bg-sky-50 font-bold text-xs sm:text-sm shadow-md transition-all shrink-0 hover:scale-[1.02] active:scale-[0.98]"
                             >
                                 <Wrench className="w-4 h-4 text-sky-600" />
                                 <span>Tangani Tiket Laporan</span>
@@ -315,17 +304,17 @@ export default function Dashboard({ stats, recentReports, chartData = [] }: Dash
                         )}
 
                         {user.role === "admin" && (
-                            <div className="flex items-center gap-2.5 flex-wrap shrink-0">
+                            <div className="flex items-center gap-2 flex-wrap shrink-0">
                                 <Link
                                     href={route("reports.index")}
-                                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white text-sky-900 hover:bg-sky-50 font-bold text-xs shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
+                                    className="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-white text-sky-900 hover:bg-sky-50 font-bold text-xs shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
                                 >
                                     <Layers className="w-3.5 h-3.5 text-sky-600" />
                                     <span>Semua Laporan</span>
                                 </Link>
                                 <Link
                                     href={route("facilities.index")}
-                                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 backdrop-blur-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+                                    className="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 backdrop-blur-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
                                 >
                                     <Boxes className="w-3.5 h-3.5" />
                                     <span>Data Fasilitas</span>
@@ -334,11 +323,9 @@ export default function Dashboard({ stats, recentReports, chartData = [] }: Dash
                         )}
                     </div>
 
-                    {/* Subtle Decorative Aviation & Radar Elements */}
+                    {/* Subtle Decorative Elements */}
                     <div className="absolute right-0 bottom-0 translate-x-12 translate-y-12 w-64 h-64 rounded-full bg-sky-400/20 blur-3xl pointer-events-none" />
                     <div className="absolute left-1/3 top-0 -translate-y-12 w-80 h-80 rounded-full bg-blue-500/15 blur-3xl pointer-events-none" />
-                    <div className="absolute -right-8 -bottom-8 w-48 h-48 border border-white/10 rounded-full pointer-events-none" />
-                    <div className="absolute -right-16 -bottom-16 w-64 h-64 border border-white/5 rounded-full pointer-events-none" />
                 </div>
 
                 {/* KPI Stat Cards */}
@@ -408,7 +395,7 @@ export default function Dashboard({ stats, recentReports, chartData = [] }: Dash
                                                     {report.title}
                                                 </h4>
                                                 <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                                                    {report.category?.name} ? {report.location?.room_name || report.location?.building}
+                                                    {report.category?.name} - {report.location?.room_name || report.location?.building}
                                                 </p>
                                             </div>
 

@@ -188,9 +188,9 @@ export default function Authenticated({
                 }`}
             >
                 {/* Brand Header & Toggle */}
-                <div className="h-16 px-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <div className="h-16 px-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2">
                     {!isSidebarCollapsed ? (
-                        <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="flex items-center gap-2 min-w-0 flex-1 overflow-hidden">
                             <img
                                 src={
                                     isDarkActual
@@ -198,37 +198,35 @@ export default function Authenticated({
                                         : "/assets/images/LOGOAIRNAVINDONESIALandscape-9-1.png"
                                 }
                                 alt="AirNav Indonesia"
-                                className="h-6 w-auto max-w-[110px] object-contain shrink-0"
+                                className="h-7 w-auto max-w-[125px] object-contain shrink-0"
                             />
-                            <div className="leading-none min-w-0">
-                                <span className="font-extrabold text-slate-900 dark:text-white text-xs tracking-tight block">
-                                    AFRS
-                                </span>
-                                <span className="text-[9px] text-sky-600 dark:text-sky-400 font-semibold tracking-wider uppercase">
-                                    Medan
-                                </span>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="w-full flex justify-center">
-                            <span className="font-extrabold text-sky-600 dark:text-sky-400 text-base">
-                                A
+                            <span className="px-1.5 py-0.5 rounded bg-sky-50 dark:bg-sky-950 text-sky-700 dark:text-sky-300 text-[10px] font-bold border border-sky-200 dark:border-sky-800 shrink-0">
+                                AFRS
                             </span>
                         </div>
+                    ) : (
+                        <button
+                            type="button"
+                            onClick={toggleSidebarCollapse}
+                            className="w-full flex items-center justify-center p-1 rounded-xl text-sky-600 dark:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                            title="Perluas Sidebar"
+                        >
+                            <span className="font-extrabold text-sm tracking-tight text-sky-600 dark:text-sky-400">
+                                AFRS
+                            </span>
+                        </button>
                     )}
 
                     <button
                         type="button"
                         onClick={toggleSidebarCollapse}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
-                        title={isSidebarCollapsed ? "Perluas Sidebar" : "Perkecil Sidebar"}
-                        aria-label={isSidebarCollapsed ? "Perluas Sidebar" : "Perkecil Sidebar"}
+                        className={`p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer shrink-0 ${
+                            isSidebarCollapsed ? "hidden" : "block"
+                        }`}
+                        title="Perkecil Sidebar"
+                        aria-label="Perkecil Sidebar"
                     >
-                        {isSidebarCollapsed ? (
-                            <PanelLeftOpen className="w-4 h-4 text-sky-600 dark:text-sky-400" />
-                        ) : (
-                            <ChevronLeft className="w-4 h-4" />
-                        )}
+                        <ChevronLeft className="w-4 h-4" />
                     </button>
                 </div>
 
@@ -247,7 +245,7 @@ export default function Authenticated({
                                     {user.name}
                                 </h4>
                                 <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
-                                    {user.department?.code ? `${user.department.code} ? ` : ""}{user.username}
+                                    {user.department?.code ? `${user.department.code} - ` : ""}{user.username}
                                 </p>
                             </div>
                         </div>
@@ -446,21 +444,13 @@ export default function Authenticated({
                             )}
                         </button>
 
-                        <div className="h-4 w-px bg-slate-200 dark:bg-slate-800" />
-
-                        <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400 tracking-wider font-semibold">
-                                KNO / WIMM ? MEDAN
-                            </span>
-                        </div>
                         {header && (
-                            <div className="flex items-center gap-2">
-                                <span className="text-slate-300 dark:text-slate-700">/</span>
+                            <>
+                                <div className="h-4 w-px bg-slate-200 dark:bg-slate-800" />
                                 <div className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                                     {header}
                                 </div>
-                            </div>
+                            </>
                         )}
                     </div>
 
