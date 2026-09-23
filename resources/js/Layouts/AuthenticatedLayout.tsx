@@ -12,9 +12,7 @@ import {
     LogOut,
     User as UserIcon,
     ChevronDown,
-    ChevronLeft,
-    ChevronRight,
-    PanelLeftClose,
+        PanelLeftClose,
     PanelLeftOpen,
     Sun,
     Moon,
@@ -187,10 +185,10 @@ export default function Authenticated({
                     isSidebarCollapsed ? "w-20" : "w-64"
                 }`}
             >
-                {/* Brand Header & Toggle */}
-                <div className="h-16 px-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2">
+                {/* Brand Header */}
+                <div className="h-16 px-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
                     {!isSidebarCollapsed ? (
-                        <div className="flex items-center gap-2 min-w-0 flex-1 overflow-hidden">
+                        <div className="flex items-center gap-2.5 min-w-0">
                             <img
                                 src={
                                     isDarkActual
@@ -198,36 +196,19 @@ export default function Authenticated({
                                         : "/assets/images/LOGOAIRNAVINDONESIALandscape-9-1.png"
                                 }
                                 alt="AirNav Indonesia"
-                                className="h-7 w-auto max-w-[125px] object-contain shrink-0"
+                                className="h-7 w-auto max-w-[130px] object-contain shrink-0"
                             />
                             <span className="px-1.5 py-0.5 rounded bg-sky-50 dark:bg-sky-950 text-sky-700 dark:text-sky-300 text-[10px] font-bold border border-sky-200 dark:border-sky-800 shrink-0">
                                 AFRS
                             </span>
                         </div>
                     ) : (
-                        <button
-                            type="button"
-                            onClick={toggleSidebarCollapse}
-                            className="w-full flex items-center justify-center p-1 rounded-xl text-sky-600 dark:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
-                            title="Perluas Sidebar"
-                        >
+                        <div className="w-full flex justify-center">
                             <span className="font-extrabold text-sm tracking-tight text-sky-600 dark:text-sky-400">
                                 AFRS
                             </span>
-                        </button>
+                        </div>
                     )}
-
-                    <button
-                        type="button"
-                        onClick={toggleSidebarCollapse}
-                        className={`p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer shrink-0 ${
-                            isSidebarCollapsed ? "hidden" : "block"
-                        }`}
-                        title="Perkecil Sidebar"
-                        aria-label="Perkecil Sidebar"
-                    >
-                        <ChevronLeft className="w-4 h-4" />
-                    </button>
                 </div>
 
                 {/* User Card in Sidebar */}
@@ -295,20 +276,8 @@ export default function Authenticated({
                     })}
                 </nav>
 
-                {/* Bottom Sidebar Footer Toggle & Logout */}
-                <div className="p-2.5 border-t border-slate-200 dark:border-slate-800 space-y-1">
-                    {isSidebarCollapsed && (
-                        <button
-                            type="button"
-                            onClick={toggleSidebarCollapse}
-                            className="w-full flex items-center justify-center p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
-                            title="Buka Sidebar"
-                            aria-label="Buka Sidebar"
-                        >
-                            <ChevronRight className="w-4 h-4" />
-                        </button>
-                    )}
-
+                {/* Bottom Sidebar Footer Logout */}
+                <div className="p-2.5 border-t border-slate-200 dark:border-slate-800">
                     <Link
                         href={route("logout")}
                         method="post"
